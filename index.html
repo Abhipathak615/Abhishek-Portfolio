@@ -377,6 +377,45 @@
 
     </div>
   </div>
+    <!-- Lightbox Modal -->
+  <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50">
+    <div class="relative max-w-4xl w-full px-4">
+      <video id="lightboxVideo" controls autoplay class="w-full h-auto rounded-xl"></video>
+      <button id="closeLightbox" class="absolute -top-10 right-0 text-white text-2xl font-bold">&times;</button>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const videos = document.querySelectorAll('#portfolio video');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxVideo = document.getElementById('lightboxVideo');
+    const closeLightbox = document.getElementById('closeLightbox');
+
+    videos.forEach(video => {
+      video.addEventListener('click', () => {
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        lightboxVideo.src = video.querySelector('source').src;
+        lightboxVideo.play();
+      });
+    });
+
+    closeLightbox.addEventListener('click', close);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+
+    function close() {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      lightboxVideo.pause();
+      lightboxVideo.src = '';
+    }
+  </script>
 </section>
 
 <!-- Filter Script + Smart Scroll Pause -->
