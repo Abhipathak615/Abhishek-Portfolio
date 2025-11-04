@@ -271,7 +271,7 @@
         </div>
     </section>
 
-<!-- Portfolio Section (fixed + smart scroll) -->
+<!-- Portfolio Section (fixed + smart scroll + lightbox fix) -->
 <section id="portfolio" class="py-20 bg-gray-900">
   <div class="container mx-auto px-6">
     <div class="text-center mb-16">
@@ -284,7 +284,7 @@
       </p>
     </div>
 
-    <!-- Filter Tabs (no "All") -->
+    <!-- Filter Tabs -->
     <div id="filter-wrap" class="flex flex-wrap justify-center mb-12 gap-2">
       <button class="filter-btn px-4 py-2 rounded-full bg-red-600 text-white" data-filter="reels">Reels/Shorts</button>
       <button class="filter-btn px-4 py-2 rounded-full bg-gray-800 text-white" data-filter="ads">Commercial Ads</button>
@@ -377,7 +377,8 @@
 
     </div>
   </div>
-    <!-- Lightbox Modal -->
+
+  <!-- Lightbox Modal -->
   <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50">
     <div class="relative max-w-4xl w-full px-4">
       <video id="lightboxVideo" controls autoplay class="w-full h-auto rounded-xl"></video>
@@ -385,15 +386,20 @@
     </div>
   </div>
 
-  <!-- Script -->
+  <!-- Lightbox Script -->
   <script>
-    const videos = document.querySelectorAll('#portfolio video');
+    const videos = document.querySelectorAll('#portfolio-grid video');
     const lightbox = document.getElementById('lightbox');
     const lightboxVideo = document.getElementById('lightboxVideo');
     const closeLightbox = document.getElementById('closeLightbox');
 
     videos.forEach(video => {
-      video.addEventListener('click', () => {
+      video.addEventListener('click', (e) => {
+        // prevent double playing and stop grid video
+        e.preventDefault();
+        e.stopPropagation();
+        videos.forEach(v => v.pause());
+
         lightbox.classList.remove('hidden');
         lightbox.classList.add('flex');
         lightboxVideo.src = video.querySelector('source').src;
@@ -401,20 +407,20 @@
       });
     });
 
-    closeLightbox.addEventListener('click', close);
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) close();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') close();
-    });
-
-    function close() {
+    function closeLightboxFunc() {
       lightbox.classList.add('hidden');
       lightbox.classList.remove('flex');
       lightboxVideo.pause();
       lightboxVideo.src = '';
     }
+
+    closeLightbox.addEventListener('click', closeLightboxFunc);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightboxFunc();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightboxFunc();
+    });
   </script>
 </section>
 
@@ -455,7 +461,7 @@
     });
   });
 
-  // Smart scroll behavior: pause when scrolled out
+  // Smart scroll: pause when scrolled out
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       const video = entry.target;
@@ -467,7 +473,7 @@
 
   document.querySelectorAll('#portfolio-grid video').forEach(video => observer.observe(video));
 })();
-    </script>
+</script>
 
 <!-- Styles -->
 <style>
@@ -490,7 +496,7 @@
   .portfolio-item p {
     margin: 0;
   }
-    </style>
+</style>
   
          <!-- About Section -->
         <section id="about" class="py-20 bg-black text-center">
